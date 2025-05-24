@@ -11,13 +11,13 @@ export function Sidebar() {
     <div className="space-y-8">
       {/* Profile Section */}
       <Link href="/">
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-3 ">
           <Image
             src="/images/avatar.jpeg"
             alt="NK"
             width={40}
             height={40}
-            className="rounded"
+            className="object-cover w-full h-full w-10 h-10 rounded-full overflow-hidden"
           />
           <div>
             <h1 className="font-semibold text-white">Nikhil Baskar</h1>
