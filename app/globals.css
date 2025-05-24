@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body{
+  background-color: #111111;
+}
+
+  
+  
+  /* Twitter embeds */
+.twitter-embed {
+  min-height: 400px;
+}
+
+.twitter-tweet {
+  margin: 0 !important;
+  width: 100% !important;
+}
+
+/* LinkedIn embeds */
+.linkedin-embed {
+  min-height: 400px;
+  position: relative;
+}
+
+.linkedin-embed iframe {
+  width: 100% !important;
+  min-height: 400px !important;
+  border: none !important;
+  border-radius: 0 0 12px 12px;
+}
+ 
