@@ -17,8 +17,11 @@ export default function RootLayout({
 
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/favicon.ico" />
+        <title>Nikhil Baskar 🚀</title>
+      </head>
       <body className={`${inter.className} bg-[#131313]`}>
-     
         {!sidebarOpen && (
           <button
             className="md:hidden text-white p-2 absolute top-4 left-4 z-50"
@@ -29,7 +32,6 @@ export default function RootLayout({
           </button>
         )}
 
-     
         {sidebarOpen && (
           <button
             className="md:hidden text-white p-2 absolute top-4 right-4 z-50"
@@ -40,7 +42,6 @@ export default function RootLayout({
           </button>
         )}
 
-    
         <div
           className={`
             fixed inset-0 bg-black bg-opacity-50 z-30 
@@ -52,7 +53,6 @@ export default function RootLayout({
           aria-hidden="true"
         />
 
-        
         <aside
           className={`
             fixed top-0 left-0 h-full w-64 bg-[#1C1C1C] p-6 
@@ -64,7 +64,6 @@ export default function RootLayout({
           <Sidebar />
         </aside>
 
-    
         <main className="md:ml-64 p-12 flex items-center justify-center min-h-screen">
           {children}
         </main>
