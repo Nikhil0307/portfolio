@@ -1,5 +1,5 @@
 "use client"
-import { Medal, Mic, Users, BookOpen } from 'lucide-react';
+import {BookOpen} from 'lucide-react'; 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
@@ -14,47 +14,24 @@ interface SubstackPost {
 export default function Community() {
   const [posts, setPosts] = useState<SubstackPost[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // This is a placeholder - you'll need to implement actual Substack API fetching
-    // or use RSS feed parsing to get your posts
     const fetchSubstackPosts = async () => {
+      setLoading(true);
+      setError(null);
       try {
-        // Replace with actual API call or RSS parsing
-        const mockPosts: SubstackPost[] = [
-          {
-            title: "Demystifying Python Pickle",
-            description: " Serialization and Deserialization Made Easy",
-            url: "https://nikhilbaskar.substack.com/p/demystifying-python-pickle-serialization",
-            date: "Nov 20, 2024",
-            image: "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F25217427-c2e2-4ebb-bb4e-9d699a3db4de_612x408.jpeg"
-          },
-          {
-            title: "Double Clicking Python Pickle : Internal Working",
-            description: "Unveiling the Mysteries of Python's Pickle: How Does It Really Work?",
-            url: "https://nikhilbaskar.substack.com/p/double-clicking-python-pickle-internal",
-            date: "SEP 20, 2024",
-            image: "https://substackcdn.com/image/fetch/w_320,h_213,c_fill,f_webp,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fcc59981b-d814-4b5f-bc0d-671f3f49d023_772x550.gif"
-          },          
-          {
-            title: "From Bottlenecks to Breakthroughs: Shared Nothing Architecture",
-            description: "The role of Shared Nothing Architecture in Building Flexible, High-Performance Systems",
-            url: "http://nikhilbaskar.substack.com/p/shared-nothing-architecture",
-            date: "Nov 14, 2024",
-            image: "https://substackcdn.com/image/fetch/w_320,h_213,c_fill,f_webp,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F8d2c16d4-f735-4595-b6b8-5b013c8ba9b7_600x400.jpeg"
-          },
-          {
-            title: "Case Studies: Real-World Implementations of Shared Nothing Architecture 🌍✨",
-            description: "How Tech Giants Leverage Shared Nothing for Scale and Speed...",
-            url: "https://nikhilbaskar.substack.com/p/sna-case-studies",
-            date: "Nov 20, 2024",
-            image: "https://substackcdn.com/image/fetch/w_520,h_272,c_fill,f_webp,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F54b56c0d-6180-487a-bb7b-3fa628928251_1595x971.png"
-          },                    
-        ];
-        
-        setPosts(mockPosts);
-      } catch (error) {
-        console.error("Error fetching Substack posts:", error);
+        const response = await fetch('/api/substack');
+        if (!response.ok) {
+          throw new Error(`Failed to fetch posts: ${response.statusText}`);
+        }
+        const data: SubstackPost[] = await response.json();
+        setPosts(data);
+      } catch (err) {
+        console.error("Error fetching Substack posts:", err);
+        setError(err instanceof Error ? err.message : "An unknown error occurred");
+        // You could set posts to your mock data as a fallback here if you want
+        // setPosts(mockPosts); 
       } finally {
         setLoading(false);
       }
@@ -63,8 +40,11 @@ export default function Community() {
     fetchSubstackPosts();
   }, []);
 
+  // Keep your mock posts if you want them as a fallback or for testing
+  // const mockPosts: SubstackPost[] = [ ... ];
+
   return (
-    <main className="text-white max-w-6xl mx-auto px-4 py-8 h-screen">
+    <main className="text-white max-w-6xl mx-auto px-4 py-8 min-h-screen"> {/* Changed h-screen to min-h-screen */}
       <div className="mb-16">
         <h1 className="text-4xl font-bold mb-8 bg-gradient-to-r from-white to-gray-900 bg-clip-text text-transparent">
           Recent Blog Posts
@@ -74,34 +54,61 @@ export default function Community() {
           <div className="flex justify-center items-center h-64">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
           </div>
+        ) : error ? (
+          <div className="text-center text-red-400 bg-red-900/30 p-4 rounded-lg">
+            <p>Could not load posts: {error}</p>
+            <p className="mt-2 text-sm">Please try again later. You can also visit my Substack directly: 
+              <a 
+                href="https://nikhilbaskar.substack.com/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-blue-400 hover:text-blue-300 underline ml-1"
+              >
+                nikhilbaskar.substack.com
+              </a>
+            </p>
+          </div>
+        ) : posts.length === 0 ? (
+          <div className="text-center text-zinc-400">
+            No posts found.
+          </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {posts.map((post, index) => (
               <div 
-                key={index} 
-                className="bg-zinc-900 rounded-xl p-6 border border-zinc-800 hover:border-blue-300 transition-all"
+                key={post.url || index} // Use URL as key if available and unique
+                className="bg-zinc-900 rounded-xl p-6 border border-zinc-800 hover:border-blue-300 transition-all flex flex-col"
               >
-                {post.image && (
-                  <div className="mb-4 overflow-hidden rounded-lg">
+                {post.image ? (
+                  <div className="mb-4 overflow-hidden rounded-lg aspect-video"> {/* aspect-video helps maintain aspect ratio */}
                     <img 
                       src={post.image} 
                       alt={post.title}
-                      className="w-full h-48 object-cover"
+                      className="w-full h-full object-cover" // Ensure image fills container
+                      onError={(e) => (e.currentTarget.style.display = 'none')} // Hide if image fails to load
                     />
                   </div>
+                ) : (
+                  <div className="mb-4 aspect-video bg-zinc-800 rounded-lg flex items-center justify-center">
+                    <BookOpen className="w-12 h-12 text-zinc-600" /> {/* Placeholder Icon */}
+                  </div>
                 )}
-                <h2 className="text-xl font-bold mb-2">
-                  <a 
-                    href={post.url} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="hover:text-blue-400 transition-colors"
-                  >
-                    {post.title}
-                  </a>
-                </h2>
-                <p className="text-zinc-400 mb-3">{post.description}</p>
-                <div className="flex justify-between items-center text-sm text-zinc-500">
+                <div className="flex flex-col flex-grow"> {/* Allow text content to grow */}
+                  <h2 className="text-xl font-bold mb-2">
+                    <a 
+                      href={post.url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="hover:text-blue-400 transition-colors line-clamp-2" // Limit title to 2 lines
+                    >
+                      {post.title}
+                    </a>
+                  </h2>
+                  <p className="text-zinc-400 mb-3 text-sm flex-grow line-clamp-3"> {/* Limit description */}
+                    {post.description}
+                  </p>
+                </div>
+                <div className="flex justify-between items-center text-sm text-zinc-500 mt-auto pt-3 border-t border-zinc-700/50"> {/* mt-auto pushes to bottom */}
                   <span>{post.date}</span>
                   <a 
                     href={post.url} 
@@ -118,6 +125,14 @@ export default function Community() {
         )}
 
         <div className="mt-12 text-center">
+          <a 
+            href="https://nikhilbaskar.substack.com/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-lg transition mr-4"
+          >
+            View All on Substack <BookOpen className="w-4 h-4" />
+          </a>
           <Link 
             href="/" 
             className="inline-flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 px-6 py-3 rounded-lg transition"
