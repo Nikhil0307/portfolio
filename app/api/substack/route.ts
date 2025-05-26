@@ -39,15 +39,20 @@ interface CustomFeed {
   items: CustomFeedItem[];
 }
 
-const parser = new Parser<CustomFeed, CustomFeedItem>({
-    customFields: {
-      item: [
-        // if itunes:image has attributes like <itunes:image href="URL"/>
-        ['itunes:image', 'itunesImageParsed', { keepArray: false, parse: (value: any) => ({ href: value.$.href }) }],
-        ['media:content', 'mediaContent', { keepArray: true }]
-      ]
-    }
-  });
+const parser = new Parser({
+  customFields: {
+    item: [
+      ['itunes:image', 'itunesImageParsed', {
+        keepArray: false,
+        parse: (value: any) => ({ href: value.$.href })
+      }] as any,
+      ['media:content', 'mediaContent', {
+        keepArray: true
+      }] as any
+    ]    
+  }
+});
+
 
 function extractImageFromHtml(htmlContent: string | undefined): string | undefined {
   if (!htmlContent) return undefined;
