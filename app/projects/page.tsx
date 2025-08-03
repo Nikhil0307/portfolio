@@ -1,15 +1,7 @@
-
 import Link from "next/link";
 import {
-  Code,
-  Github,
-  Globe,
-  Gamepad,
-  Database,
-  MessageSquare,
   Bot,
-  Earth,
-  House,
+  MessageSquare,
   ChefHat,
   CarTaxiFront,
   HelpingHand,
@@ -17,6 +9,22 @@ import {
 
 export default function Projects() {
   const projects = [
+    {
+      title: "Nexply - Job Search Assistant",
+      tech: ["NextJS"],
+      description:
+        "An AI-powered job application assistant that helps you apply smarter and faster.",
+      icon: <Bot className="w-6 h-6" />,
+      demoUrl: "https://nexply.vercel.app/",
+    },
+    {
+      title: "ELI5YO - Explain Like I'm 5",
+      tech: ["NextJS"],
+      description:
+        "An AI tool that breaks down any topic so simply, even a 5-year-old could understand it.",
+      icon: <MessageSquare className="w-6 h-6" />,
+      demoUrl: "https://eli5yo.vercel.app/",
+    },
     {
       title: "CookBook - Recipe Web Application",
       tech: ["Spring", "ELK Stack", "Java"],
@@ -35,7 +43,7 @@ export default function Projects() {
       title: "Online Food Order",
       tech: ["Python", "FastAPI"],
       description:
-        "Online food ordering app for browsing menus and placing delivery orders",      
+        "Online food ordering app for browsing menus and placing delivery orders",
       icon: <HelpingHand className="w-6 h-6" />,
     },
   ];
@@ -44,7 +52,7 @@ export default function Projects() {
     <main className="text-white max-w-6xl mx-auto px-4 py-8 sm:py-12">
       <div className="mb-16">
         <h1 className="text-3xl sm:text-4xl font-bold mb-8 bg-gradient-to-r from-white to-gray-900 bg-clip-text text-transparent">
-          Creative Experiments
+          Side Quests 🧪
         </h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -52,10 +60,9 @@ export default function Projects() {
             <div
               key={index}
               className="relative group bg-zinc-900 rounded-xl p-6 border border-zinc-800 
-                         hover:border-blue-500 transition-all duration-300 
-                         hover:shadow-2xl hover:shadow-blue-900/20"
+                          hover:border-blue-500 transition-all duration-300 
+                          hover:shadow-2xl hover:shadow-blue-900/20"
             >
- 
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-zinc-800 rounded-lg text-blue-400">
@@ -67,7 +74,6 @@ export default function Projects() {
                 </div>
               </div>
 
-         
               <div className="mb-4 flex flex-wrap gap-2">
                 {project.tech.map((tech, techIndex) => (
                   <span
@@ -79,14 +85,26 @@ export default function Projects() {
                 ))}
               </div>
 
-       
-              <p className="text-zinc-400 text-sm sm:text-base mb-6">
+              <p className="text-zinc-400 text-sm sm:text-base mb-4">
                 {project.description}
               </p>
+
+              {project.demoUrl && (
+                <a
+                  href={project.demoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                >
+                  <span className="text-sm font-medium text-white flex items-center gap-1">
+                    View Project <span className="text-lg">→</span>
+                  </span>
+                </a>
+              )}
+
             </div>
           ))}
         </div>
-
 
         <div className="mt-12 text-center">
           <Link
