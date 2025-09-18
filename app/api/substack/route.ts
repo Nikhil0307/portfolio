@@ -1,6 +1,6 @@
-// app/api/substack/route.ts (or your current route file name)
-import { NextResponse } from 'next/server';
-import Parser from 'rss-parser';
+// app/api/substack/route.ts
+import { NextResponse } from "next/server";
+import Parser from "rss-parser";
 
 interface CustomFeedItemEnclosure {
   url?: string;
@@ -9,14 +9,14 @@ interface CustomFeedItemEnclosure {
 }
 
 interface CustomFeedItemItunes {
-  image?: string; // For simple cases where itunes:image is just a URL string
+  image?: string;
 }
 
 interface CustomFeedItemMediaContent {
   $: {
     url: string;
-    medium?: string; // e.g., 'image'
-    type?: string;   // e.g., 'image/jpeg'
+    medium?: string;
+    type?: string;
   };
 }
 
@@ -24,131 +24,123 @@ interface CustomFeedItem {
   title?: string;
   link?: string;
   pubDate?: string;
-  content?: string; // Full HTML content
-  contentSnippet?: string; // Short text snippet
+  content?: string;
+  contentSnippet?: string;
   guid?: string;
   isoDate?: string;
   enclosure?: CustomFeedItemEnclosure;
-  itunes?: CustomFeedItemItunes; // Parsed by rss-parser for <itunes:image>
-  "media:content"?: CustomFeedItemMediaContent[] | CustomFeedItemMediaContent; // For <media:content>
-  // For custom parsed fields from rss-parser if configured, e.g. itunesImage
+  itunes?: CustomFeedItemItunes;
+  "media:content"?: CustomFeedItemMediaContent[] | CustomFeedItemMediaContent;
   itunesImage?: { href?: string };
-}
-
-interface CustomFeed {
-  items: CustomFeedItem[];
+  // fields from customFields parser config
+  itunesImageParsed?: { href?: string };
+  mediaContent?: CustomFeedItemMediaContent[] | CustomFeedItemMediaContent;
 }
 
 const parser = new Parser({
   customFields: {
     item: [
-      ['itunes:image', 'itunesImageParsed', {
+      // try to capture itunes image formats if present (defensive)
+      ["itunes:image", "itunesImageParsed", {
         keepArray: false,
-        parse: (value: any) => ({ href: value.$.href })
+        parse: (value: any) => ({ href: value?.$.href ?? value })
       }] as any,
-      ['media:content', 'mediaContent', {
-        keepArray: true
-      }] as any
-    ]    
-  }
+      // capture media:content into mediaContent
+      ["media:content", "mediaContent", { keepArray: true }] as any,
+    ],
+  },
 });
-
 
 function extractImageFromHtml(htmlContent: string | undefined): string | undefined {
   if (!htmlContent) return undefined;
-  const imgRegex = /<img[^>]+src="([^">]+)"/;
+  const imgRegex = /<img[^>]+src=["']([^"'>]+)["']/i;
   const match = htmlContent.match(imgRegex);
   return match ? match[1] : undefined;
 }
 
 export async function GET() {
-  const SUBSTACK_URL = 'https://nikhilbaskar.substack.com/feed';
-  console.log(`Fetching Substack feed from: ${SUBSTACK_URL}`); // Log start
+  // Default to the Hashnode RSS URL for your Hashnode account.
+  // You can override this by setting HASHNODE_RSS_URL in your environment.
+  const HASHNODE_RSS_URL = process.env.HASHNODE_RSS_URL || "https://nikhil-baskar.hashnode.dev/rss.xml";
+
+  console.log(`Fetching Hashnode feed from: ${HASHNODE_RSS_URL}`);
 
   try {
-    const feed = await parser.parseURL(SUBSTACK_URL);
-    console.log(`Successfully fetched and parsed feed. Found ${feed.items.length} items.`); // Log success
+    const feed = await parser.parseURL(HASHNODE_RSS_URL);
+    console.log(`Successfully fetched and parsed feed. Found ${feed.items.length} items.`);
 
-    const posts = feed.items.map((item: any, index: number) => { // Added 'any' for easier access to custom parsed fields initially
-      console.log(`Processing item ${index + 1}: ${item.title}`); // Log each item
+    const posts = feed.items.map((item: CustomFeedItem, index: number) => {
+      console.log(`Processing item ${index + 1}: ${item.title}`);
+
       let imageUrl: string | undefined = undefined;
 
-      // 1. Try itunes:image (via custom field 'itunesImageParsed')
+      // 1. try custom parsed itunes image
       if (item.itunesImageParsed?.href) {
         imageUrl = item.itunesImageParsed.href;
         console.log(`  Image from itunesImageParsed: ${imageUrl}`);
       }
 
-      // 2. Try itunes:image (direct object, if not caught by custom field)
-      //    Substack's <itunes:image href="..."/> often gets parsed directly by rss-parser into itunes.image as a string.
-      if (!imageUrl && item.itunes?.image && typeof item.itunes.image === 'string') {
+      // 2. try common itunes.image field
+      if (!imageUrl && item.itunes?.image && typeof item.itunes.image === "string") {
         imageUrl = item.itunes.image;
-         console.log(`  Image from direct item.itunes.image: ${imageUrl}`);
+        console.log(`  Image from item.itunes.image: ${imageUrl}`);
       }
 
-
-      // 3. Try media:content (via custom field 'mediaContent')
-      if (!imageUrl && item.mediaContent) {
-        const mediaContentArray = Array.isArray(item.mediaContent) ? item.mediaContent : [item.mediaContent];
-        const imageMedia = mediaContentArray.find(
-          (media: any) => media?.$?.medium === 'image' || media?.$?.type?.startsWith('image/')
+      // 3. try media:content (parsed into mediaContent)
+      if (!imageUrl && (item.mediaContent || item["media:content"])) {
+        const mediaArray = Array.isArray(item.mediaContent) ? item.mediaContent : (item.mediaContent ? [item.mediaContent] : (Array.isArray(item["media:content"]) ? item["media:content"] : item["media:content"] ? [item["media:content"]] : []));
+        const imageMedia = (mediaArray as any[]).find(
+          (m) => m?.$?.medium === "image" || m?.$?.type?.startsWith?.("image/")
         );
         if (imageMedia) {
           imageUrl = imageMedia.$.url;
-          console.log(`  Image from mediaContent: ${imageUrl}`);
+          console.log(`  Image from mediaContent/media:content: ${imageUrl}`);
         }
       }
-      
-      // 4. Try enclosure URL if it's an image
-      if (!imageUrl && item.enclosure?.url && item.enclosure?.type?.startsWith('image/')) {
+
+      // 4. try enclosure
+      if (!imageUrl && item.enclosure?.url && item.enclosure?.type?.startsWith?.("image/")) {
         imageUrl = item.enclosure.url;
         console.log(`  Image from enclosure: ${imageUrl}`);
       }
-      
-      // 5. Fallback: extract from HTML content (item.content)
+
+      // 5. fallback: try to extract first <img> from content (Hashnode often embeds images in content)
       if (!imageUrl) {
         imageUrl = extractImageFromHtml(item.content);
-        if (imageUrl) console.log(`  Image from HTML content: ${imageUrl}`);
-        else console.log(`  No image found through standard means or HTML for: ${item.title}`);
+        if (imageUrl) console.log(`  Image extracted from HTML content: ${imageUrl}`);
+        else console.log(`  No image found for item: ${item.title}`);
       }
-      
-      // Ensure description is a string
-      let description = item.contentSnippet || '';
-      if (description.length > 150) {
-        description = description.substring(0, 147) + '...';
-      } else if (!description && item.content) {
-        // Basic strip HTML for snippet if contentSnippet is missing
-        const textContent = item.content.replace(/<[^>]*>?/gm, '');
-        description = textContent.substring(0, 150) + (textContent.length > 150 ? '...' : '');
+
+      // build a short description/snippet
+      let description = item.contentSnippet ?? "";
+      if (!description && item.content) {
+        // simple strip HTML fallback
+        const text = item.content.replace(/<[^>]*>?/gm, "");
+        description = text.substring(0, 150) + (text.length > 150 ? "..." : "");
       }
-      if (!description) {
-        description = 'No description available.';
-      }
+      if (!description) description = "No description available.";
 
       return {
-        title: item.title || 'Untitled Post',
-        description: description,
-        url: item.link || '#',
-        date: item.pubDate ? new Date(item.pubDate).toLocaleDateString('en-US', {
-          year: 'numeric', month: 'short', day: 'numeric',
-        }) : 'No date',
+        title: item.title || "Untitled Post",
+        description,
+        url: item.link || "#",
+        date: item.pubDate
+          ? new Date(item.pubDate).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
+          : "No date",
         image: imageUrl,
       };
-    }).slice(0, 9); // Get latest 9 posts
+    }).slice(0, 9); // latest 9 posts
 
-    console.log("Processed posts:", posts.map(p => ({ title: p.title, image: p.image ? 'Yes' : 'No' }))); // Log processed posts info
+    console.log("Processed posts info:", posts.map(p => ({ title: p.title, hasImage: !!p.image })));
     return NextResponse.json(posts);
-
   } catch (error: any) {
-    console.error('Failed to fetch or parse Substack feed:', error);
-    // Log the detailed error object
-    console.error('Error details:', JSON.stringify(error, Object.getOwnPropertyNames(error)));
+    console.error("Failed to fetch or parse Hashnode feed:", error);
+    console.error("Error details:", JSON.stringify(error, Object.getOwnPropertyNames(error)));
     return NextResponse.json(
-      { error: 'Failed to fetch or process Substack feed', details: error.message },
+      { error: "Failed to fetch or process Hashnode feed", details: error?.message ?? String(error) },
       { status: 500 }
     );
   }
 }
 
-// Optional: Revalidate data periodically (e.g., every hour)
-export const revalidate = 3600; // 3600 seconds = 1 hour
+export const revalidate = 3600;
