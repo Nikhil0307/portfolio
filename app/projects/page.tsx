@@ -5,21 +5,30 @@ import {
   ChefHat,
   CarTaxiFront,
   HelpingHand,
+  FileText,
 } from "lucide-react";
 
 export default function Projects() {
   const projects = [
     {
-      title: "Nexply - Job Search Assistant",
-      tech: ["NextJS"],
+      title: "AI Resume Pro - ATS Optimized Resume Builder",
+      tech: ["NextJS", "AI Models"],
       description:
-        "An AI-powered job application assistant that helps you apply smarter and faster.",
+        "Generate role-specific resumes optimized for ATS scoring with 85%+ keyword match. Paste a job description and instantly get a tailored resume.",
+      icon: <FileText className="w-6 h-6" />,
+      demoUrl: "https://ai-resume-pro-ten.vercel.app/",
+    },
+    {
+      title: "Nexply - Job Search Assistant",
+      tech: ["NextJS", "AI"],
+      description:
+        "An AI-powered job application assistant that parses resumes, fetches jobs from portals, and generates custom cover letters.",
       icon: <Bot className="w-6 h-6" />,
       demoUrl: "https://nexply.vercel.app/",
     },
     {
       title: "ELI5YO - Explain Like I'm 5",
-      tech: ["NextJS"],
+      tech: ["NextJS", "AI"],
       description:
         "An AI tool that breaks down any topic so simply, even a 5-year-old could understand it.",
       icon: <MessageSquare className="w-6 h-6" />,
@@ -29,21 +38,21 @@ export default function Projects() {
       title: "CookBook - Recipe Web Application",
       tech: ["Spring", "ELK Stack", "Java"],
       description:
-        "Recipe web app for browsing, searching, and managing cooking recipes online",
+        "Recipe web app for browsing, searching, and managing cooking recipes online.",
       icon: <ChefHat className="w-6 h-6" />,
     },
     {
-      title: "Book cabs",
+      title: "Book Cabs",
       tech: ["PHP", "Laravel", "MapBoxAPI"],
       description:
-        "Cab booking requesting rides and managing transportation services",
+        "Cab booking platform for requesting rides and managing transportation services.",
       icon: <CarTaxiFront className="w-6 h-6" />,
     },
     {
       title: "Online Food Order",
       tech: ["Python", "FastAPI"],
       description:
-        "Online food ordering app for browsing menus and placing delivery orders",
+        "Online food ordering app for browsing menus and placing delivery orders.",
       icon: <HelpingHand className="w-6 h-6" />,
     },
   ];
@@ -101,7 +110,6 @@ export default function Projects() {
                   </span>
                 </a>
               )}
-
             </div>
           ))}
         </div>
