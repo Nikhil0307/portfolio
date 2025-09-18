@@ -5,7 +5,7 @@ import Parser from "rss-parser";
 interface CustomFeedItemEnclosure {
   url?: string;
   type?: string;
-  length?: string;
+  length?: string | number;
 }
 
 interface CustomFeedItemItunes {
