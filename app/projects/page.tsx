@@ -12,7 +12,7 @@ export default function Projects() {
   const projects = [
     {
       title: "AI Resume Pro - ATS Optimized Resume Builder",
-      tech: ["NextJS", "AI Models"],
+      tech: ["LLM API", "NextJS", "AI Models"],
       description:
         "Generate role-specific resumes optimized for ATS scoring with 85%+ keyword match. Paste a job description and instantly get a tailored resume.",
       icon: <FileText className="w-6 h-6" />,
@@ -20,7 +20,7 @@ export default function Projects() {
     },
     {
       title: "Nexply - Job Search Assistant",
-      tech: ["NextJS", "AI"],
+      tech: ["LLM API", "FAST API", "Python",  "NextJS"],
       description:
         "An AI-powered job application assistant that parses resumes, fetches jobs from portals, and generates custom cover letters.",
       icon: <Bot className="w-6 h-6" />,
@@ -28,7 +28,7 @@ export default function Projects() {
     },
     {
       title: "ELI5YO - Explain Like I'm 5",
-      tech: ["NextJS", "AI"],
+      tech: ["LLM API", "NextJS"],
       description:
         "An AI tool that breaks down any topic so simply, even a 5-year-old could understand it.",
       icon: <MessageSquare className="w-6 h-6" />,
