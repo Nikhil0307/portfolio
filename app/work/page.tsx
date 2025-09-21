@@ -40,19 +40,28 @@ export default function Work() {
               </div>
               <ul className="list-disc pl-6 space-y-3 text-zinc-300 text-sm lg:text-md">
                 <li>
-                  <strong>Orchestration & Scalability:</strong> Designed a Kubernetes-based orchestration layer for AI/ML workloads—cutting deployment time by 40%, reducing manual config by 60%, and boosting productivity by 50%.
+                   <strong>High-Performance Distributed Caching:</strong> 
+                   Built a gRPC-based distributed cache handling 1M+ requests/day—reduced cache misses by 35% and improved read latency by 70%. 
+                </li> 
+                <li> 
+                  <strong>Message Queue Orchestration:</strong>
+                   Designed API gateway integrations with RabbitMQ consumers—boosted throughput 2.5× while sustaining 99.9% delivery reliability. 
+                </li> 
+                <li> 
+                  <strong>Scalable System Architecture:</strong>
+                   Migrated a legacy monolith into React-based microfrontends + microservices backend—achieved 3× scalability gains and faster developer onboarding. 
+                </li> 
+                <li> 
+                  <strong>Infrastructure & Deployment:</strong>
+                   Implemented Kubernetes deployment workflows—cut release cycles by 40% and enabled rapid, reliable feature rollouts. 
                 </li>
-                <li>
-                  <strong>Infrastructure & Deployment:</strong> Migrated a monolithic service to microservices with Kubernetes—achieving auto-scaling, rolling updates, 3× scalability improvement, and 90% downtime reduction.
-                </li>
-                <li>
-                  <strong>High-Performance Distributed Storage:</strong> Built a gRPC-based distributed database (with cache layers) supporting 1M+ requests/day—featuring similarity caching, TTL, pre-fetching, and write-back, reducing cache misses by 35% and improving read speeds by 70%.
-                </li>
-                <li>
-                  <strong>Optimized Docker Workflows:</strong> Adopted multi-stage Docker builds—shrinking image size by 40%, cutting build time from 10 to 4 minutes, and improving deployment efficiency 3×.
-                </li>
-                <li>
-                  <strong>Message Queue Orchestration:</strong> Developed a dynamic RabbitMQ consumer manager that scaled based on queue metrics—eliminated OOMs, improved throughput by 2.5×, and sustained 99.9% delivery reliability.
+                <li> 
+                  <strong>Observability & Monitoring:</strong>
+                   Enhanced system visibility with Prometheus + Grafana dashboards—reduced MTTR by 45% through proactive monitoring and alerting.
+                </li> 
+                <li> 
+                  <strong>Service Integrations:</strong>
+                   Developed REST + GraphQL APIs to standardize service contracts—reduced cross-service integration failures by 25%. 
                 </li>
               </ul>
             </div>
