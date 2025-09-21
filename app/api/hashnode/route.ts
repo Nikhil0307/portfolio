@@ -1,4 +1,4 @@
-// app/api/substack/route.ts
+// app/api/hashnode/route.ts
 import { NextResponse } from "next/server";
 
 const HASHNODE_GQL_ENDPOINT = "https://gql.hashnode.com/";

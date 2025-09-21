@@ -80,11 +80,11 @@ export default function About() {
           </Link>
 
           <Link
-            href="https://nikhilbaskar.substack.com"
+            href="https://nikhil-baskar.hashnode.dev/"
             target="_blank"
             className="bg-zinc-800 hover:bg-zinc-700 px-6 py-2 rounded-lg transition flex items-center gap-2"
           >
-            <SubstackIcon className="w-5 h-5" /> Substack
+            <HashnodeIcon className="w-5 h-5" /> HashNode
           </Link>
         </div>
       </div>
@@ -129,15 +129,15 @@ function GithubIcon(props: any) {
   );
 }
 
-function SubstackIcon(props: any) {
+function HashnodeIcon(props: any) {
   return (
     <svg
       {...props}
       xmlns="http://www.w3.org/2000/svg"
       fill="currentColor"
-      viewBox="0 0 512 512"
+      viewBox="0 0 337 337"
     >
-      <path d="M64 64v64h384V64H64zm0 128v64h384v-64H64zm0 128v64h384v-64H64z" />
+      <path d="M168.5 0c-9.9 0-19.4 3.9-26.4 10.9L10.9 142.1c-14.5 14.5-14.5 38.2 0 52.7l131.2 131.2c14.5 14.5 38.2 14.5 52.7 0l131.2-131.2c14.5-14.5 14.5-38.2 0-52.7L194.9 10.9C187.9 3.9 178.4 0 168.5 0zm0 101.1c37.2 0 67.4 30.2 67.4 67.4s-30.2 67.4-67.4 67.4-67.4-30.2-67.4-67.4 30.2-67.4 67.4-67.4z" />
     </svg>
   );
 }

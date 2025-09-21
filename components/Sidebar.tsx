@@ -60,7 +60,7 @@ export function Sidebar() {
 
         <Section title="Quick Links">
           {/* For external links, `isActive` won't matter since they won't match `pathname`. */}
-          <NavItem href="https://nikhilbaskar.substack.com/" label="Blog" />          
+          <NavItem href="https://nikhil-baskar.hashnode.dev/" label="HashNode" />          
           <NavItem
             href="https://www.linkedin.com/in/nikhil0307/"
             label="LinkedIn"

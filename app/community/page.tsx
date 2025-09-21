@@ -21,7 +21,7 @@ export default function Community() {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch("/api/substack"); // server route remains api/substack
+        const response = await fetch("/api/hashnode"); // server route remains api/hashnode
         if (!response.ok) {
           throw new Error(`Failed to fetch posts: ${response.statusText}`);
         }
